@@ -33,6 +33,7 @@ func main() {
     L.PreloadModule("template", gluatemplate.Loader)
     if err := L.DoString(`
 local template = require("template")
+
 local text = template.dostring([[
 This is a text template library.
 Created by {{.first_name}} {{.last_name}}
