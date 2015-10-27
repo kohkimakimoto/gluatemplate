@@ -18,7 +18,7 @@ go get github.com/kohkimakimoto/gluatemplate
 
 ## Usage
 
-```lua
+```go
 package main
 
 import (
