@@ -42,7 +42,7 @@ Created by {{.first_name}} {{.last_name}}
 	last_name = "makimoto",
 })
 
--- print(text)
+print(text)
 --
 -- This is a text template library.
 -- Created by kohki makimoto
