@@ -2,16 +2,16 @@ package gluatemplate
 
 import (
 	"bytes"
+	"fmt"
 	"github.com/yuin/gopher-lua"
 	"text/template"
-	"fmt"
 )
 
 func Loader(L *lua.LState) int {
 	tb := L.NewTable()
 	L.SetFuncs(tb, map[string]lua.LGFunction{
 		"dostring": doString,
-		"dofile": doFile,
+		"dofile":   doFile,
 	})
 	L.Push(tb)
 
@@ -25,7 +25,9 @@ func doString(L *lua.LState) int {
 
 	tmpl, err := template.New("T").Parse(tmplcontent)
 	if err != nil {
-		L.RaiseError("error: %v", err)
+		L.Push(lua.LNil)
+		L.Push(lua.LString(err.Error()))
+		return 2
 	}
 
 	if L.GetTop() >= 2 {
@@ -34,7 +36,9 @@ func doString(L *lua.LState) int {
 
 	var b bytes.Buffer
 	if err := tmpl.Execute(&b, dict); err != nil {
-		L.RaiseError("error: %v", err)
+		L.Push(lua.LNil)
+		L.Push(lua.LString(err.Error()))
+		return 2
 	}
 	s := b.String()
 
@@ -48,7 +52,9 @@ func doFile(L *lua.LState) int {
 
 	tmpl, err := template.ParseFiles(tmplfile)
 	if err != nil {
-		L.RaiseError("error: %v", err)
+		L.Push(lua.LNil)
+		L.Push(lua.LString(err.Error()))
+		return 2
 	}
 
 	if L.GetTop() >= 2 {
@@ -57,14 +63,15 @@ func doFile(L *lua.LState) int {
 
 	var b bytes.Buffer
 	if err := tmpl.Execute(&b, dict); err != nil {
-		L.RaiseError("error: %v", err)
+		L.Push(lua.LNil)
+		L.Push(lua.LString(err.Error()))
+		return 2
 	}
 	s := b.String()
 
 	L.Push(lua.LString(s))
 	return 1
 }
-
 
 // This code refers to https://github.com/yuin/gluamapper/blob/master/gluamapper.go
 func toGoValue(lv lua.LValue) interface{} {
